@@ -97,6 +97,10 @@ class PDOConnection extends PDO implements ConnectionInterface, ServerInfoAwareC
      */
     public function lastInsertId($name = null)
     {
+        if (!\Doctrine\DBAL\SchemaValidation::get()) {
+            return null;
+        }
+
         try {
             if ($name === null) {
                 return parent::lastInsertId();

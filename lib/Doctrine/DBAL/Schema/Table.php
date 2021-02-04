@@ -707,7 +707,10 @@ class Table extends AbstractAsset
     public function getColumn($name)
     {
         $name = $this->normalizeIdentifier($name);
-        if (! $this->hasColumn($name)) {
+
+        if (!\Doctrine\DBAL\SchemaValidation::get()) {
+            $this->_columns[$name] = new Column($name, Type::getType('string'));
+        } elseif (! $this->hasColumn($name)) {
             throw SchemaException::columnDoesNotExist($name, $this->_name);
         }
 
