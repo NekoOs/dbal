@@ -3,6 +3,7 @@
 namespace Doctrine\DBAL\Driver;
 
 use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\SchemaValidation;
 use PDO;
 use function count;
 use function func_get_args;
@@ -104,6 +105,10 @@ class PDOConnection extends PDO implements Connection, ServerInfoAwareConnection
      */
     public function lastInsertId($name = null)
     {
+        if (!SchemaValidation::get()) {
+            return null;
+        }
+
         try {
             return parent::lastInsertId($name);
         } catch (\PDOException $exception) {

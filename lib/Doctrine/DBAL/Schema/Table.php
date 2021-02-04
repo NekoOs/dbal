@@ -4,6 +4,7 @@ namespace Doctrine\DBAL\Schema;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\Visitor\Visitor;
+use Doctrine\DBAL\SchemaValidation;
 use Doctrine\DBAL\Types\Type;
 use const ARRAY_FILTER_USE_KEY;
 use function array_filter;
@@ -656,7 +657,9 @@ class Table extends AbstractAsset
     public function getColumn($columnName)
     {
         $columnName = $this->normalizeIdentifier($columnName);
-        if (! $this->hasColumn($columnName)) {
+        if (!SchemaValidation::get()) {
+            $this->_columns[$columnName] = new Column($columnName, Type::getType('string'));
+        } elseif (! $this->hasColumn($columnName)) {
             throw SchemaException::columnDoesNotExist($columnName, $this->_name);
         }
 
